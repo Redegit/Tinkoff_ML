@@ -1,17 +1,18 @@
 import argparse
 from datetime import datetime
-import os
-import re
-import time
+import os  # переписать как from
+import re  # переписать как from
+import time  # удалить из финальной версии
+import pickle
 
 
 def main():
     # получаем аргументы
     parser.add_argument('--input-dir', default='text_samples', type=str,
                         help='путь к директории с текстовыми файлами в формате .txt')
-    parser.add_argument('--model', default=f'models/{datetime.now().strftime("%d-%m-%Y-%H-%M-%S")}.model', type=str,
+    parser.add_argument('--model', default=f'models/{datetime.now().strftime("%d-%m-%Y-%H-%M-%S")}.pkl', type=str,
                         help='путь к файлу, в который сохраняется модель '
-                             '(по умолчанию: Tinkoff_ML/models/dd-mm-yyyy-HH-MM-SS.model)')
+                             '(по умолчанию: Tinkoff_ML/models/dd-mm-yyyy-HH-MM-SS.pkl)')
     args = parser.parse_args()
 
     # проверяем путь к папке с текстами
@@ -23,11 +24,11 @@ def main():
 
     # проверяем путь к файлу для модели, даем файлу расширение .model и помещаем в папку models, если не указана иная
     try:
-        if not args.model[-6:] == '.model':
-            args.model += '.model'
+        if not args.model[-4:] == '.pkl':
+            args.model += '.pkl'
         if not any(char in ['/', '\\'] for char in args.model):
             args.model = "models/" + args.model
-        model_file = open(file=args.model, mode='w')
+        model_file = open(file=args.model, mode='wb')
     except FileNotFoundError:
         print("Ошибка: такой директории для модели не существует")
         return
@@ -59,7 +60,7 @@ def main():
         current_word = next_word
 
     # print(model_dict)
-    model_file.write(f'{model_dict}')
+    pickle.dump(model_dict, model_file)
     model_file.close()
     # print(samples)
     # print(f"{args.input_dir}")

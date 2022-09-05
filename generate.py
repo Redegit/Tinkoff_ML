@@ -2,6 +2,13 @@ import argparse
 import os
 import re
 import time
+import pickle
+import random as rn
+
+
+# хз, что за класс, но просят сделать
+class Model:
+    pass
 
 
 def main():
@@ -15,9 +22,14 @@ def main():
                         help='длина генерируемой последовательности')
     args = parser.parse_args()
 
-    with open(args.model) as mod:
-        print(type(eval(mod.readline())))
+    # загружаем полученную модель
+    with open(args.model, 'rb') as f:
+        model_file = pickle.load(f)
+        if not args.prefix:
+            args.prefix = rn.choice(list(model_file))  # 0.025 секунды
+        print(args.prefix)
     print(args)
+
     # print("Программа завершена успешно\n"
     #       f"Модель на основе файлов из {} сохранена в {}")
 
@@ -31,4 +43,4 @@ parser = argparse.ArgumentParser(
 if __name__ == "__main__":
     start = time.monotonic()  # не забыть убрать
     main()
-    print(time.monotonic()-start)
+    print(time.monotonic() - start)
