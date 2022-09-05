@@ -7,9 +7,9 @@ import time
 
 def main():
     # получаем аргументы
-    parser.add_argument('--input-dir', default='text_samples',
+    parser.add_argument('--input-dir', default='text_samples', type=str,
                         help='путь к директории с текстовыми файлами в формате .txt')
-    parser.add_argument('--model', default=f'models/{datetime.now().strftime("%d-%m-%Y-%H-%M-%S")}.model',
+    parser.add_argument('--model', default=f'models/{datetime.now().strftime("%d-%m-%Y-%H-%M-%S")}.model', type=str,
                         help='путь к файлу, в который сохраняется модель '
                              '(по умолчанию: Tinkoff_ML/models/dd-mm-yyyy-HH-MM-SS.model)')
     args = parser.parse_args()
@@ -76,8 +76,8 @@ parser = argparse.ArgumentParser(
 
 model_dict = {}
 
-alphabet = 'abcdefghigklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщЪыьэюя'
+
 if __name__ == "__main__":
-    start = time.monotonic()
+    start = time.monotonic()  # не забыть убрать
     main()
     print(time.monotonic()-start)
