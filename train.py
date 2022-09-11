@@ -1,13 +1,13 @@
 import argparse
+import re
 from datetime import datetime
 from os import listdir
-import re
 from pickle import dump
 
 
 def main():
     # получаем аргументы
-    parser.add_argument('--input-dir', default=input("Введите путь к директории с файлами >> "), type=str,
+    parser.add_argument('--input-dir', default='', type=str,
                         help='путь к директории с текстовыми файлами в формате .txt')
     parser.add_argument('--model', default=f'data/models/{datetime.now().strftime("%d-%m-%Y-%H-%M-%S")}.pkl', type=str,
                         help='путь к файлу, в который сохраняется модель '
@@ -15,6 +15,8 @@ def main():
     args = parser.parse_args()
 
     # проверяем путь к папке с текстами
+    if not args.input_dir:
+        args.input_dir = input("Введите путь к директории с файлами >> ")
     try:
         samples = list(filter(lambda elem: elem[-4:] == '.txt', listdir(args.input_dir)))
     except FileNotFoundError:

@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from pickle import load
+
 import numpy as np
 
 
@@ -14,7 +15,8 @@ def main():
                         help='длина генерируемой последовательности')
     args = parser.parse_args()
 
-    # загружаем полученную модель
+    # загружаем модель
+    print("Загружаем модель...")
     with open(args.model, 'rb') as f:
         model = load(f)
         args.prefix = args.prefix.lower()
@@ -29,6 +31,7 @@ def main():
                     return
                 args.prefix = np.random.choice(list(model))
 
+        print("Генерируем текст...\n")
         out_text = [args.prefix]
         while len(out_text) < args.length:
             next_word = np.random.choice(list(model[out_text[-1]].keys()), p=list(model[out_text[-1]].values()))
