@@ -1,14 +1,6 @@
-import argparse
-import os
-import re
-import time
-import pickle
-import random as rn
-
-
-# хз, что за класс, но просят сделать
-class Model:
-    pass
+from argparse import ArgumentParser
+from pickle import load
+import numpy as np
 
 
 def main():
@@ -24,23 +16,33 @@ def main():
 
     # загружаем полученную модель
     with open(args.model, 'rb') as f:
-        model_file = pickle.load(f)
-        if not args.prefix:
-            args.prefix = rn.choice(list(model_file))  # 0.025 секунды
-        print(args.prefix)
-    print(args)
+        model = load(f)
+        args.prefix = args.prefix.lower()
+        # выбираем случайный префикс, если он не задан или не существует
+        if args.prefix not in model.keys():
+            if not args.prefix:
+                args.prefix = np.random.choice(list(model))
+            else:
+                choice = input("Такого слова нет в модели\nВыбрать случайно? (д/н) >> ")
+                if choice.lower() not in ['y', 'yes', "да", "д"]:
+                    print("Программа завершена досрочно")
+                    return
+                args.prefix = np.random.choice(list(model))
 
-    # print("Программа завершена успешно\n"
-    #       f"Модель на основе файлов из {} сохранена в {}")
+        out_text = [args.prefix]
+        while len(out_text) < args.length:
+            next_word = np.random.choice(list(model[out_text[-1]].keys()), p=list(model[out_text[-1]].values()))
+            out_text.append(next_word)
+
+    print(' '.join(out_text).capitalize() + '.')
 
 
-parser = argparse.ArgumentParser(
+# описание при вызове generate.py -h/--help
+parser = ArgumentParser(
     prog='generate.py',
     description='Скрипт, генерирующий текст произвольной длины на основе созданной train.py модели',
     epilog='By RedRaccoon - Преснухин Дмитрий'
 )
 
 if __name__ == "__main__":
-    start = time.monotonic()  # не забыть убрать
     main()
-    print(time.monotonic() - start)
